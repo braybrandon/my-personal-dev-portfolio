@@ -1,0 +1,44 @@
+# .github/workflows/ci-cd.yml
+
+name: Angular CI/CD Build
+
+on:
+  push:
+    branches:
+      - main # Or 'main' if that's your default branch name
+  pull_request:
+    branches:
+      - main # Or 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use a Linux runner for faster builds
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4 # Action to check out your code
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x' # Use a recent LTS Node.js version, e.g., 18.x, 20.x, 22.x
+
+      - name: Install Dependencies
+        # Navigate into your Angular app folder before running npm install
+        run: |
+          cd portfolio-app
+          npm ci # 'npm ci' is faster and more reliable for CI than 'npm install'
+
+      - name: Build Angular Application
+        # Navigate into your Angular app folder before building
+        run: |
+          cd portfolio-app
+          ng build --configuration production --base-href /portfolio-app/ # Adjust base-href if deploying to a subpath
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-app-build # Name of the artifact
+          path: portfolio-app/dist/portfolio-app # Path to your built Angular app (dist folder)
+          # The 'dist' folder name might vary slightly based on your angular.json
+          # It's usually 'dist/<your-app-name>'
