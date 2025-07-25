@@ -33,7 +33,7 @@ jobs:
         # Navigate into your Angular app folder before building
         run: |
           cd portfolio-app
-          ng build --configuration production --base-href /portfolio-app/ # Adjust base-href if deploying to a subpath
+          npx ng build --configuration production --base-href /portfolio-app/ # Adjust base-href if deploying to a subpath
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
