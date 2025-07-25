@@ -29,11 +29,11 @@ jobs:
           cd portfolio-app
           npm ci # 'npm ci' is faster and more reliable for CI than 'npm install'
 
-      - name: Build Angular Application
+      - name: Build Angular Application with Prerendering
         # Navigate into your Angular app folder before building
         run: |
           cd portfolio-app
-          npx ng build --configuration production --base-href /portfolio-app/ # Adjust base-href if deploying to a subpath
+          npx ng build --configuration production --base-href /my-personal-dev-portfolio/ # Adjust base-href if deploying to a subpath
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
