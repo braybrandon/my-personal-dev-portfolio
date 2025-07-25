@@ -34,13 +34,6 @@ jobs:
         run: |
           cd portfolio-app
           npx ng build --configuration production --base-href /portfolio-app/ # Adjust base-href if deploying to a subpath
-      
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by GitHub Actions
-          publish_dir: ./dist # This tells the action which directory to publish to gh-pages
-          publish_branch: gh-pages
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
@@ -49,3 +42,23 @@ jobs:
           path: portfolio-app/dist/portfolio-app # Path to your built Angular app (dist folder)
           # The 'dist' folder name might vary slightly based on your angular.json
           # It's usually 'dist/<your-app-name>'
+  
+  deploy:
+    needs: build # This ensures the 'deploy' job only runs if the 'build' job succeeded
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # IMPORTANT: Grant write permission for the workflow to push to the repo
+
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: portfolio-app-build # Must match the 'name' given in the 'upload-artifact' step
+          path: ./dist # Downloads the artifact to a folder named 'dist' in the current working directory of this job
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by GitHub Actions
+          publish_dir: ./dist # This tells the action which directory to publish to gh-pages
+          publish_branch: gh-pages
